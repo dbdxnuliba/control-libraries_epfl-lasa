@@ -56,8 +56,8 @@ public:
     return robot_.forward_velocity(joint_state_);
   }
 
-  JointVelocities inverse_velocity(const CartesianTwist& twist) {
-    return robot_.inverse_velocity(twist, joint_state_);
+  JointVelocities inverse_velocity(const CartesianTwist& twist, const QPInverseVelocityParameters& qp_params) {
+    return robot_.inverse_velocity(twist, joint_state_, qp_params);
   }
 
   const std::string& get_robot_name() {
@@ -78,12 +78,16 @@ void control_loop(RobotInterface& robot, const int& freq) {
   std::vector<double> gains = {50.0, 50.0, 50.0, 10.0, 10.0, 10.0};
   Linear<CartesianState> linear_ds(target, gains);
 
+  double control_loop_period = 1e9 * 1.0 / freq;
+  QPInverseVelocityParameters qp_params;
+  qp_params.dt = std::chrono::nanoseconds(static_cast<int>(control_loop_period));
+
   ros::Rate rate(freq);
   while (ros::ok()) {
     if (robot.state_received) {
       CartesianTwist twist = linear_ds.evaluate(robot.get_eef_pose());
       twist.clamp(0.25, 0.5);
-      JointVelocities command = robot.inverse_velocity(twist);
+      JointVelocities command = robot.inverse_velocity(twist, qp_params);
       robot.publish(command);
       rate.sleep();
     }
