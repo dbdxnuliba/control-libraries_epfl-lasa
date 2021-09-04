@@ -1,5 +1,5 @@
 import unittest
-from state_representation import CartesianState, dist
+from state_representation import CartesianState, CartesianPose, CartesianTwist, CartesianWrench, dist
 import numpy as np
 
 CARTESIAN_STATE_METHOD_EXPECTS = [
@@ -117,6 +117,51 @@ class TestCartesianState(unittest.TestCase):
 
         A = A - B
         A -= B
+
+    def test_multiply_operators(self):
+        state = CartesianState.Random("world")
+        pose = CartesianPose.Random("world")
+        twist = CartesianTwist.Random("world")
+        wrench = CartesianWrench.Random("world")
+
+        state *= state
+        state *= pose
+        state *= twist
+        state *= wrench
+        state * state
+        state * pose
+        state * twist
+        state * wrench
+
+
+        pose *= state
+        pose *= pose
+        pose *= twist
+        pose *= wrench
+        pose = CartesianPose.Random("world")
+        pose * state
+        pose * pose
+        pose * twist
+        pose * wrench
+
+        # twist * state
+        # twist * pose
+        # twist * twist
+        # twist * wrench
+        # twist *= state
+        # twist *= pose
+        # twist *= twist
+        # twist *= wrench
+
+        # wrench * state
+        # wrench * pose
+        # wrench * twist
+        # wrench * wrench
+        # wrench *= state
+        # wrench *= pose
+        # wrench *= twist
+        # wrench *= wrench
+
 
 if __name__ == '__main__':
     unittest.main()
