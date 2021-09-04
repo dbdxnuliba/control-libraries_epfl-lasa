@@ -20,5 +20,10 @@ class TestCartesianPose(unittest.TestCase):
         self.assert_np_array_equal(A.get_position(), [1, 2, 3])
         self.assert_np_array_equal(A.get_orientation(), [1, 2, 3, 4] / np.linalg.norm([1, 2, 3, 4]))
 
+    def test_inverse(self):
+        pose = CartesianPose.Random("A", "B")
+        inv_pose = pose.inverse()
+        self.assertIsInstance(inv_pose, CartesianPose)
+
 if __name__ == '__main__':
     unittest.main()
