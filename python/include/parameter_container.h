@@ -37,3 +37,7 @@ public:
 
   ParameterValues values;
 };
+
+ParameterContainer parameter_interface_ptr_to_container(const std::shared_ptr<ParameterInterface>& parameter);
+
+std::shared_ptr<ParameterInterface> container_to_parameter_interface_ptr(const ParameterContainer& parameter);

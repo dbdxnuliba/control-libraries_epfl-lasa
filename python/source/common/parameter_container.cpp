@@ -95,3 +95,133 @@ py::object ParameterContainer::get_value() {
       return py::none();
   }
 }
+
+ParameterContainer parameter_interface_ptr_to_container(const std::shared_ptr<ParameterInterface>& parameter) {
+  switch (parameter->get_type()) {
+//      case StateType::PARAMETER_INT: {
+//        return *std::static_pointer_cast<Parameter<int>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_INT_ARRAY: {
+//        return std::static_pointer_cast<Parameter<std::vector<int>>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_DOUBLE: {
+//        return std::static_pointer_cast<Parameter<double>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_DOUBLE_ARRAY: {
+//        return std::static_pointer_cast<Parameter<std::vector<double>>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_BOOL: {
+//        return std::static_pointer_cast<Parameter<bool>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_BOOL_ARRAY: {
+//        return std::static_pointer_cast<Parameter<std::vector<bool>>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_STRING: {
+//        return param = std::static_pointer_cast<Parameter<std::string>>(self->get_parameter(name));
+//        break;
+//      }
+//      case StateType::PARAMETER_STRING_ARRAY: {
+//        return param = std::static_pointer_cast<Parameter<std::vector<std::string>>>(self->get_parameter(name));
+//        break;
+//      }
+    case StateType::PARAMETER_CARTESIANSTATE: {
+      auto param = std::static_pointer_cast < Parameter < CartesianState >> (parameter);
+      return ParameterContainer(param->get_name(), py::cast(param->get_value()), param->get_type());
+      break;
+    }
+    case StateType::PARAMETER_CARTESIANPOSE: {
+      auto param = std::static_pointer_cast < Parameter < CartesianPose >> (parameter);
+      return ParameterContainer(param->get_name(), py::cast(param->get_value()), param->get_type());
+      break;
+    }
+//      case StateType::PARAMETER_JOINTSTATE: {
+//        return param = std::static_pointer_cast<Parameter<JointState>>(self->get_parameter(name));
+//        break;
+//      }
+//      case StateType::PARAMETER_JOINTPOSITIONS: {
+//        return param = std::static_pointer_cast<Parameter<JointPositions>>(self->get_parameter(name));
+//        break;
+//      }
+    case StateType::PARAMETER_MATRIX: {
+      auto param = std::static_pointer_cast < Parameter < Eigen::MatrixXd >> (parameter);
+      return ParameterContainer(param->get_name(), py::cast(param->get_value()), param->get_type());
+      break;
+    }
+//      case StateType::PARAMETER_VECTOR: {
+//        return param = std::static_pointer_cast<Parameter<Eigen::VectorXd>>(self->get_parameter(name));
+//        break;
+//      }
+    default:
+      break;
+  }
+}
+
+std::shared_ptr<ParameterInterface> container_to_parameter_interface_ptr(const ParameterContainer& parameter) {
+  switch (parameter.get_type()) {
+//      case StateType::PARAMETER_INT: {
+//        return *std::static_pointer_cast<Parameter<int>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_INT_ARRAY: {
+//        return std::static_pointer_cast<Parameter<std::vector<int>>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_DOUBLE: {
+//        return std::static_pointer_cast<Parameter<double>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_DOUBLE_ARRAY: {
+//        return std::static_pointer_cast<Parameter<std::vector<double>>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_BOOL: {
+//        return std::static_pointer_cast<Parameter<bool>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_BOOL_ARRAY: {
+//        return std::static_pointer_cast<Parameter<std::vector<bool>>>(parameter->get_name());
+//        break;
+//      }
+//      case StateType::PARAMETER_STRING: {
+//        return param = std::static_pointer_cast<Parameter<std::string>>(self->get_parameter(name));
+//        break;
+//      }
+//      case StateType::PARAMETER_STRING_ARRAY: {
+//        return param = std::static_pointer_cast<Parameter<std::vector<std::string>>>(self->get_parameter(name));
+//        break;
+//      }
+    case StateType::PARAMETER_CARTESIANSTATE: {
+      return std::make_shared<Parameter<CartesianState>>(parameter.get_name(), parameter.values.cartesian_state);
+      break;
+    }
+    case StateType::PARAMETER_CARTESIANPOSE: {
+      return std::make_shared<Parameter<CartesianPose>>(parameter.get_name(), parameter.values.cartesian_pose);
+      break;
+    }
+//      case StateType::PARAMETER_JOINTSTATE: {
+//        return param = std::static_pointer_cast<Parameter<JointState>>(self->get_parameter(name));
+//        break;
+//      }
+//      case StateType::PARAMETER_JOINTPOSITIONS: {
+//        return param = std::static_pointer_cast<Parameter<JointPositions>>(self->get_parameter(name));
+//        break;
+//      }
+//    case StateType::PARAMETER_MATRIX: {
+//      return std::make_shared<Parameter<Eigen::MatrixXd>>(parameter.get_name(), py::cast(parameter.values.matrix_value));
+//      break;
+//    }
+//      case StateType::PARAMETER_VECTOR: {
+//        return param = std::static_pointer_cast<Parameter<Eigen::VectorXd>>(self->get_parameter(name));
+//        break;
+//      }
+    default:
+      return {};
+      break;
+  }
+}
